@@ -172,7 +172,7 @@ Shape * create_cercle_shape(int px, int py, int radius) {
     return shp;
 }
 
-Shape * create_polygon_shape(int **lst,int n){
+Shape * create_polygon_shape(int ** lst,int n){
     if (n%2 != 0 ){
         printf("Erreur : le nombre de points doit être un multiple de 2");
         return NULL;
@@ -209,6 +209,9 @@ void delete_shape(Shape * shape){
             delete_polygon(shape->ptrShape);
             break;
         }
+        default:{
+            break;
+        }
     }
     free(shape);
 
@@ -239,6 +242,9 @@ void print_shape(Shape * shape){
         }
         case POLYGON:{
             print_polygon(shape->ptrShape);
+            break;
+        }
+        default:{
             break;
         }
     }

@@ -50,19 +50,31 @@ void delete_area(Area *area){
 
     erase_area(area);
 }
-/*
+
 void draw_area(Area *area){
     for (int i = 0; i<(area->nb_shapes);i++){
-        Pixel ** stock = create_shape_to_pixel(area->shapes[i]);
-        for (int j = 0; j<stock[i];j++){
-            for (int k =0; k<)
+        int nb_pixels;
+        //printf("test");
+        Pixel ** pix = create_shape_to_pixel(area->shapes[i],&nb_pixels);
+        printf("%d", nb_pixels);
+        /*
+        for (int j = 0;j <nb_pixels;j++){
+            Pixel * pix_2 = pix[j];
+            area->MAT[pix_2->px][pix_2->py] = 1;
+            printf("test5\n");
+            //delete_pixel(pix_2);
         }
+         */
+        //delete_pixel_shape(&pix,nb_pixels);
     }
+    printf("test4");
 }
-*/
+
 
 void print_area(Area * area){
+    printf("test3");
     for (int i = 0;i <(area->height);i++){
+        printf("test2\n");
         for (int j = 0;j<(area->width);j++){
             if (area->MAT[i][j] == 0){
                 printf("%c", 46); // 46 en ASCII correspond à "."
@@ -155,35 +167,35 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
 
         //1
         px = create_pixel((c ->pos->pos_x)+x, (c -> pos->pos_y)+y);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //2
         px = create_pixel((c ->pos->pos_x)+y, (c ->pos->pos_y)+x);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //3
         px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)+y);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //4
         px = create_pixel((c->pos->pos_x)-y,(c->pos->pos_y)+x);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //5
         px = create_pixel((c->pos->pos_x)+x,(c->pos->pos_y)-y);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //6
         px = create_pixel((c->pos->pos_x)+y, (c->pos->pos_y)-x);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //7
         px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)-y);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         //8
         px = create_pixel((c->pos->pos_x)-y, (c->pos->pos_y)-x);
-        pixel_tab[*nb_pixels++] = px;
+        *pixel_tab[*nb_pixels++] = px;
 
         if (d>=(2*x)){
             d -= 2*x+1;
@@ -202,5 +214,88 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
 }
 
 void pixel_square(Shape * square, Pixel ***  pixel_tab, int * nb_pixels){
+    Square * carre = square->ptrShape;
+
+    Shape * new_l_haute = create_line_shape(carre->pos->pos_x, carre->pos->pos_y,carre->pos->pos_x, (carre->pos->pos_y)+(carre->length));
+    pixel_line(new_l_haute, pixel_tab, nb_pixels);
+
+    Shape * new_l_droite = create_line_shape(carre->pos->pos_x,carre->pos->pos_y+carre->length,carre->pos->pos_x+carre->length,carre->pos->pos_y+carre->length);
+    pixel_line(new_l_droite, pixel_tab, nb_pixels);
+
+    Shape * new_l_bas = create_line_shape(carre->pos->pos_x+carre->length,carre->pos->pos_y+carre->length, carre->pos->pos_x+carre->length, carre->pos->pos_y);
+    pixel_line(new_l_bas,pixel_tab,nb_pixels);
+
+    Shape * new_l_gauche = create_line_shape(carre->pos->pos_x+carre->length, carre->pos->pos_y, carre ->pos->pos_x,carre->pos->pos_y);
+    pixel_line(new_l_gauche,pixel_tab,nb_pixels);
+
+}
+
+void pixel_rectangle(Shape * rectangle, Pixel *** pixel_tab,int * nb_pixels){
+    Rectangle * rect = rectangle ->ptrShape;
+
+    Shape * new_rect_haut = create_line_shape(rect->pos->pos_x,rect->pos->pos_y,rect->pos->pos_x,rect->pos->pos_y+rect->longueur);
+    pixel_line(new_rect_haut,pixel_tab,nb_pixels);
+
+    Shape * new_rect_droite = create_line_shape(rect->pos->pos_x,rect->pos->pos_y+rect->longueur, rect->pos->pos_x+rect->largeur,rect->pos->pos_y+rect->longueur);
+    pixel_line(new_rect_droite,pixel_tab,nb_pixels);
+
+    Shape * new_rect_bas = create_line_shape(rect->pos->pos_x+rect->largeur,rect->pos->pos_y+rect->longueur, rect->pos->pos_x+rect->largeur,rect->pos->pos_y);
+    pixel_line(new_rect_bas,pixel_tab,nb_pixels);
+
+    Shape * new_rect_gauche = create_line_shape(rect->pos->pos_x+rect->largeur,rect->pos->pos_y, rect->pos->pos_x,rect->pos->pos_y);
+    pixel_line(new_rect_gauche,pixel_tab,nb_pixels);
+
+}
+
+void pixel_polygon(Shape * polygon, Pixel *** pixel_tab, int * nb_pixels){
+    Polygon * poly = polygon -> ptrShape;
+    for (int i = 0; i<(poly->n)-1;i++){
+        Shape * new = create_line_shape(poly->points[i]->pos_x,poly->points[i]->pos_y,poly->points[i+1]->pos_x,poly->points[i+1]->pos_y);
+        pixel_line(new,pixel_tab,nb_pixels);
+    }
+    Shape * new = create_line_shape(poly->points[poly->n]->pos_x,poly->points[poly->n]->pos_y,poly->points[poly->n+1]->pos_x,poly->points[poly->n+1]->pos_y);
+    pixel_line(new,pixel_tab,nb_pixels);
+}
+
+
+
+Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels){
+        Pixel ** pix_tab = NULL;
+        //*nb_pixels = 0;
+        switch(shape -> shape_type){
+            case POINT:{
+                pixel_point(shape,&pix_tab, nb_pixels);
+                break;
+            }
+            case LINE:{
+                pixel_line(shape,&pix_tab,nb_pixels);
+                break;
+            }
+            case CIRCLE:{
+                pixel_circle(shape,&pix_tab,nb_pixels);
+                break;
+            }
+            case SQUARE:{
+                pixel_square(shape,&pix_tab,nb_pixels);
+                break;
+            }
+            case RECTANGLE:{
+                pixel_rectangle(shape,&pix_tab,nb_pixels);
+                break;
+            }
+            case POLYGON:{
+                pixel_polygon(shape,&pix_tab,nb_pixels);
+                break;
+            }
+        }
+        return pix_tab;
+}
+
+void delete_pixel_shape(Pixel *** pixel, int nb_pixels){
+    for (int i = 0;i<nb_pixels;i++){
+        delete_pixel((*pixel)[i]);
+    }
+    free(*pixel);
+    *pixel = NULL;
 
 }

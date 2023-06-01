@@ -18,7 +18,7 @@ struct area{
 };
 typedef struct area Area;
 
-Area* create_area(unsigned int width, unsigned innt height);
+Area* create_area(unsigned int width, unsigned int height);
 void add_shape_to_area(Area* area, Shape* shape);
 void clear_area(Area* area);
 void erase_area(Area* area);
@@ -45,5 +45,8 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab,int * nb_pixels);
 void pixel_square(Shape * square, Pixel*** pixel_tab, int* nb_pixels);
 void pixel_rectangle(Shape* rectangle, Pixel*** pixel_tab, int* nb_pixels);
 void pixel_polygon(Shape* polygon, Pixel*** pixel_tab, int* nb_pixels);
+
+Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels);
+void delete_pixel_shape(Pixel***pixel, int nb_pixels);
 
 #endif //PROJET_AREA_H

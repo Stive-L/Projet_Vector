@@ -57,7 +57,7 @@ void print_circle(Circle * circle);
 
 // Structure Polygon
 typedef struct {
-    int n;
+    int n; // Le nombre de point
     Point ** points; // tableau 1D dynamique de Point*
 }Polygon;
 Polygon *create_polygon(int n, int** tab);
