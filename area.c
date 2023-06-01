@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 // Area
 Area* create_area(unsigned int width, unsigned int height){
     Area * nouv_area = malloc(sizeof(Area));
@@ -95,5 +96,111 @@ void pixel_point(Shape* shape, Pixel*** pixel_tab, int * nb_pixels){
 
 void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
     Line * l = line-> ptrShape;
+    int dx = (l->p2->pos_x) - (l->p1->pos_x);
+    int dy = (l->p2->pos_y) - (l->p1->pos_y);
+    int dmin,dmax;
+    if (dx <= dy) {
+        dmin = dx;
+        dmax = dy; // Taille totale
+    }
+    else{
+        dmin = dy;
+        dmax = dx; // Taille totale
+    }
+    int nb_segs = dmin +1;
+    int taille_base = dmax / nb_segs;
+    int segments[nb_segs];
+    for (int i = 0; i<nb_segs;i++){
+        segments[i] = taille_base;
+    }
+    int restants = (dmax+1)%(dmin+1);
+    int *cumuls = (int *)malloc(nb_segs*sizeof(int));
+    cumuls[0]=0;
+    for (int i = 1; i < nb_segs;i++)
+    {
+        cumuls[i] = ((i*restants)%(dmin+1) < ((i-1)*restants)%(dmin+1));
+        segments[i] = segments[i]+cumuls[i];
+    }
+    for (int i = 0; i<nb_segs-1;i++){
+        for (int j = 0;j <  segments[i];j++ ) {
+            if (dy < 0) {
+                if (dx > abs(dy)) {
+                    *pixel_tab[*nb_pixels] = create_pixel(++(l->p1->pos_x), (l->p1->pos_y)--);
+                    *nb_pixels += 1;
+                } else {
+                    *pixel_tab[*nb_pixels] = create_pixel((l->p1->pos_x)++, --(l->p1->pos_y));
+                    *nb_pixels += 1;
+                }
+            } else {
+                if (dx > dy) {
+                    *pixel_tab[*nb_pixels] = create_pixel(++(l->p1->pos_x), (l->p1->pos_y)++);
+                    *nb_pixels += 1;
+                } else {
+                    *pixel_tab[*nb_pixels] = create_pixel((l->p1->pos_x)++, ++(l->p1->pos_y));
+                    *nb_pixels += 1;
+                }
+            }
+        }
+    }
+}
+
+void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
+    Circle * c = shape->ptrShape;
+    int x = 0;
+    int y = c -> rayon;
+    int d = c -> rayon-1;
+
+    Pixel * px = NULL;
+    while (y >= x){
+
+        //1
+        px = create_pixel((c ->pos->pos_x)+x, (c -> pos->pos_y)+y);
+        pixel_tab[*nb_pixels++] = px;
+
+        //2
+        px = create_pixel((c ->pos->pos_x)+y, (c ->pos->pos_y)+x);
+        pixel_tab[*nb_pixels++] = px;
+
+        //3
+        px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)+y);
+        pixel_tab[*nb_pixels++] = px;
+
+        //4
+        px = create_pixel((c->pos->pos_x)-y,(c->pos->pos_y)+x);
+        pixel_tab[*nb_pixels++] = px;
+
+        //5
+        px = create_pixel((c->pos->pos_x)+x,(c->pos->pos_y)-y);
+        pixel_tab[*nb_pixels++] = px;
+
+        //6
+        px = create_pixel((c->pos->pos_x)+y, (c->pos->pos_y)-x);
+        pixel_tab[*nb_pixels++] = px;
+
+        //7
+        px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)-y);
+        pixel_tab[*nb_pixels++] = px;
+
+        //8
+        px = create_pixel((c->pos->pos_x)-y, (c->pos->pos_y)-x);
+        pixel_tab[*nb_pixels++] = px;
+
+        if (d>=(2*x)){
+            d -= 2*x+1;
+            x++;
+        }
+        else if (d<2*(c->rayon-y)){
+            d+= 2*y-1;
+            y--;
+        }
+        else{
+            d += 2 * (y-x-1);
+            y--;
+            x++;
+        }
+    }
+}
+
+void pixel_square(Shape * square, Pixel ***  pixel_tab, int * nb_pixels){
 
 }
