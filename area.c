@@ -61,7 +61,7 @@ void draw_area(Area *area){
         for (int j = 0;j <nb_pixels;j++){
             Pixel * pix_2 = pix[j];
             //area->MAT[pix_2->px][pix_2->py] = 1;
-            area->MAT[pix_2->px][pix_2->py+1] = 1;
+            area->MAT[pix_2->px][pix_2->py] = 1;
             printf("test5\n");
 
             //delete_pixel(pix_2);
@@ -140,7 +140,7 @@ void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
     }
 
     for (int i = 0; i<nb_segs-1;i++){
-        for (int j = 0;j <  segments[i];j++ ) {
+        for (int j = 0;j <segments[i];j++ ) {
             if (dy < 0) {
                 if (dx > abs(dy)) {
                     (*pixel_tab)[*nb_pixels] = create_pixel(++(l->p1->pos_x), (l->p1->pos_y)--);
@@ -180,6 +180,7 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
         px = create_pixel((c ->pos->pos_x)+y, (c ->pos->pos_y)+x);
         (*pixel_tab)[(*nb_pixels)] = px;
         *nb_pixels += 1;
+
         //3
         px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)+y);
         (*pixel_tab)[(*nb_pixels)] = px;
