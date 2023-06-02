@@ -12,9 +12,10 @@ Area* create_area(unsigned int width, unsigned int height){
     Area * nouv_area = malloc(sizeof(Area));
     nouv_area ->width = width;
     nouv_area -> height = height;
-    nouv_area -> MAT = malloc(height * sizeof(int *));
-    for (int i = 0; i < height;i++){
-        nouv_area-> MAT[i] = calloc(width, sizeof(int));
+
+    nouv_area -> MAT = malloc(width*sizeof(BOOL *));
+    for (int i=0;i<width;i++) {
+        nouv_area->MAT[i] = calloc(height, sizeof(int));
     }
     nouv_area->nb_shapes = 0;
     return nouv_area;
@@ -59,7 +60,8 @@ void draw_area(Area *area){
         //printf("%d", nb_pixels);
         for (int j = 0;j <nb_pixels;j++){
             Pixel * pix_2 = pix[j];
-            area->MAT[pix_2->px][pix_2->py] = 1;
+            //area->MAT[pix_2->px][pix_2->py] = 1;
+            area->MAT[pix_2->px][pix_2->py+1] = 1;
             printf("test5\n");
 
             //delete_pixel(pix_2);
@@ -73,9 +75,9 @@ void draw_area(Area *area){
 
 void print_area(Area * area){
     //printf("test3");
-    for (int i = 0;i <(area->height);i++){
+    for (int i = 0;i <(area->width);i++){ // Hauteur
         //printf("test2\n");
-        for (int j = 0;j<(area->width);j++){
+        for (int j = 0;j<(area->height);j++){ // Largeur
             if (area->MAT[i][j] == 0){
                 printf("%c", 46); // 46 en ASCII correspond à "."
             }
@@ -120,19 +122,23 @@ void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
         dmax = dx; // Taille totale
     }
     int nb_segs = dmin +1;
-    int taille_base = dmax / nb_segs;
-    int segments[nb_segs];
+    int taille_totale = dmax + 1;
+    int taille_base = taille_totale / nb_segs;
+        int segments[nb_segs];
     for (int i = 0; i<nb_segs;i++){
         segments[i] = taille_base;
     }
+
     int restants = (dmax+1)%(dmin+1);
     int *cumuls = (int *)malloc(nb_segs*sizeof(int));
     cumuls[0]=0;
+
     for (int i = 1; i < nb_segs;i++)
     {
         cumuls[i] = ((i*restants)%(dmin+1) < ((i-1)*restants)%(dmin+1));
         segments[i] = segments[i]+cumuls[i];
     }
+
     for (int i = 0; i<nb_segs-1;i++){
         for (int j = 0;j <  segments[i];j++ ) {
             if (dy < 0) {
@@ -167,36 +173,39 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
 
         //1
         px = create_pixel((c ->pos->pos_x)+x, (c -> pos->pos_y)+y);
-        (*pixel_tab)[(*nb_pixels)++] = px;
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
 
         //2
         px = create_pixel((c ->pos->pos_x)+y, (c ->pos->pos_y)+x);
-        (*pixel_tab)[(*nb_pixels)++] = px;
-
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
         //3
         px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)+y);
-        (*pixel_tab)[(*nb_pixels)++] = px;
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
 
         //4
         px = create_pixel((c->pos->pos_x)-y,(c->pos->pos_y)+x);
-        (*pixel_tab)[(*nb_pixels)++] = px;
-
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
         //5
         px = create_pixel((c->pos->pos_x)+x,(c->pos->pos_y)-y);
-        (*pixel_tab)[(*nb_pixels)++] = px;
-
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
         //6
         px = create_pixel((c->pos->pos_x)+y, (c->pos->pos_y)-x);
-        (*pixel_tab)[(*nb_pixels)++] = px;
-
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
         //7
         px = create_pixel((c->pos->pos_x)-x,(c->pos->pos_y)-y);
-        (*pixel_tab)[(*nb_pixels)++] = px;
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
 
         //8
         px = create_pixel((c->pos->pos_x)-y, (c->pos->pos_y)-x);
-        (*pixel_tab)[(*nb_pixels)++] = px;
-
+        (*pixel_tab)[(*nb_pixels)] = px;
+        *nb_pixels += 1;
         if (d>=(2*x)){
             d -= 2*x+1;
             x++;
@@ -260,7 +269,7 @@ void pixel_polygon(Shape * polygon, Pixel *** pixel_tab, int * nb_pixels){
 
 
 Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels){
-        Pixel ** pix_tab = malloc(sizeof(Pixel*));
+        Pixel ** pix_tab = malloc(sizeof(Pixel*)*1000);
         //*nb_pixels = 0;
         //printf("%d", *nb_pixels);
         switch(shape -> shape_type){
