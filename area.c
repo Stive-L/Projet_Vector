@@ -364,17 +364,22 @@ void pixel_rectangle(Shape * rectangle, Pixel *** pixel_tab,int * nb_pixels){
 void pixel_polygon(Shape * polygon, Pixel *** pixel_tab, int * nb_pixels){
     Polygon * poly = polygon -> ptrShape;
     *pixel_tab = malloc(poly->n * sizeof(Pixel *));
-
-    for (int i = 0; i<(poly->n)-1;i++){
-        Shape * new = create_line_shape(poly->points[i]->pos_x,poly->points[i]->pos_y,poly->points[i+1]->pos_x,poly->points[i+1]->pos_y);
-        pixel_line(new,pixel_tab,nb_pixels);
+    for (int i = 0; i<poly->n/2;i++){
+        if (i != (poly->n/2)-1) {
+            Shape *new = create_line_shape(poly->points[i]->pos_x, poly->points[i]->pos_y, poly->points[i + 1]->pos_x,poly->points[i + 1]->pos_y);
+            //Shape *new = create_line_shape(poly->points[i]->pos_y, poly->points[i]->pos_x, poly->points[i + 1]->pos_y,poly->points[i + 1]->pos_y);
+            pixel_line(new, pixel_tab, nb_pixels);
+        }
+        else{
+            break;
+        }
     }
+
     /*
     Shape * new = create_line_shape(poly->points[poly->n]->pos_x,poly->points[poly->n]->pos_y,poly->points[poly->n+1]->pos_x,poly->points[poly->n+1]->pos_y);
     pixel_line(new,pixel_tab,nb_pixels);
     */
 }
-
 
 
 Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels){
