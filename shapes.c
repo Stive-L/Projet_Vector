@@ -68,8 +68,8 @@ void print_square(Square * square){
 Rectangle * create_rectangle(Point * point, int width, int height){
     Rectangle * nouv_rect = malloc(sizeof(Rectangle));
     nouv_rect->pos = point;
-    nouv_rect->longueur = width;
-    nouv_rect->largeur = height;
+    nouv_rect->longueur = height;
+    nouv_rect->largeur = width;
     return nouv_rect;
 }
 void delete_rectangle(Rectangle * rectangle){
