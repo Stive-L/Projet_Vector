@@ -57,10 +57,7 @@ void delete_square(Square * square){
 }
 
 void print_square(Square * square){
-    printf("Coin supérieur gauche (Carré) : (%d,%d)\n", square ->pos->pos_x, square-> pos->pos_y);
-    printf("Coin supérieur droite (Carré) : (%d,%d)\n", square->pos->pos_x,(square->pos->pos_y)+(square->length));
-    printf("Coin inférieur gauche (Carré) : (%d,%d)\n", (square->pos->pos_x)+(square->length),(square->pos->pos_y));
-    printf("Coin inférieur droite (Carré) : (%d,%d)\n", (square->pos->pos_x)+(square->length),(square->pos->pos_y)+(square->length));
+    printf("CARRE %d %d %d", square ->pos->pos_x, square-> pos->pos_y, square->length);
 }
 //----------------------------------------------------------------------
 
@@ -77,10 +74,7 @@ void delete_rectangle(Rectangle * rectangle){
     rectangle = NULL;
 }
 void print_rectangle(Rectangle * rectangle){
-    printf("Coin supérieur gauche (Rectangle) : (%d,%d)\n", rectangle ->pos->pos_x, rectangle-> pos->pos_y);
-    printf("Coin supérieur droite (Rectangle) : (%d,%d)\n", rectangle->pos->pos_x,(rectangle->pos->pos_y)+(rectangle->longueur));
-    printf("Coin inférieur gauche (Rectangle) : (%d,%d)\n", (rectangle->pos->pos_x)+(rectangle->largeur),(rectangle->pos->pos_y));
-    printf("Coin inférieur droite (Rectangle) : (%d,%d)\n", (rectangle->pos->pos_x)+(rectangle->largeur),(rectangle->pos->pos_y)+(rectangle->longueur));
+    printf("RECTANGLE %d %d %d %d\n", rectangle ->pos->pos_x, rectangle-> pos->pos_y, rectangle->largeur,rectangle->longueur);
 }
 //-----------------------------------------------------------------------
 
@@ -96,24 +90,24 @@ void delete_circle(Circle * circle){
     circle = NULL;
 }
 void print_circle(Circle * circle){
-    printf("CIRCLE (%d,%d) %d \n", circle -> pos->pos_x,circle->pos->pos_y, circle->rayon);
+    printf("CIRCLE %d %d %d \n", circle -> pos->pos_x,circle->pos->pos_y, circle->rayon);
 }
 
 // Polygone
-Polygon * create_polygon(int n, int ** tab){
-     Polygon * nouv_poly = malloc(sizeof(Polygon));
-     nouv_poly -> n = n;
-     nouv_poly -> points = malloc((n+1)*sizeof(Point*));
-     for (int i = 0;i < n; i++){
-         nouv_poly->points[i] = create_point(tab[i][0],tab[i][1]);
-     }
-     nouv_poly->points[n] = create_point(tab[0][0],tab[0][1]);
-     return nouv_poly;
-
+Polygon *create_polygon(int n, Point **points){
+    Polygon *polygon = malloc(sizeof(Polygon));
+    Point **points2 = malloc((n/2) * sizeof(Point));
+    polygon->n = n;
+    for (int i = 0; i < (n/2); i++)
+    {
+        points2[i] = points[i];
+    }
+    polygon->points = points2;
+    return polygon;
 }
 
 void delete_polygon(Polygon * polygon){
-    for(int i = 0; i<= polygon -> n; i++ )
+    for(int i = 0; i<= (polygon -> n)/2; i++ )
     {
         free(polygon->points[i]);
     }
@@ -122,9 +116,11 @@ void delete_polygon(Polygon * polygon){
     polygon = NULL;
 }
 
-void print_polygon(Polygon * polygon){
-    for(int i = 0; i< polygon->n;i++){
-        printf("POLYGON pos %d : (%d, %d)\n",i, polygon->points[i]->pos_x,polygon->points[i]->pos_y);
+void print_polygon(Polygon *polygon){
+    printf("POLYGON ");
+    for (int i = 0; i < (polygon->n)/2; i++)
+    {
+        printf("%d %d ", polygon->points[i]->pos_y, polygon->points[i]->pos_x);
     }
 }
 
@@ -165,21 +161,29 @@ Shape *create_rectangle_shape(int px, int py, int width, int height) {
     return shp;
 }
 
-Shape * create_cercle_shape(int px, int py, int radius) {
+Shape * create_circle_shape(int px, int py, int radius){
     Shape * shp = create_empty_shape(CIRCLE);
     Circle * cercle = create_circle(create_point(px,py),radius);
     shp -> ptrShape = cercle;
     return shp;
 }
 
-Shape * create_polygon_shape(int ** lst,int n){
+Shape * create_polygon_shape(int lst[], int n){
     if (n%2 != 0 ){
         printf("Erreur : le nombre de points doit être un multiple de 2");
         return NULL;
     }
-    Shape * shp = create_empty_shape(POLYGON);
-    Polygon * poly = create_polygon(n, lst);
-    shp -> ptrShape = poly;
+
+    Point **points = malloc(n * sizeof(Point));
+    int i;
+    int j = 0;
+    for (i = 0; i < n; i += 2,j++)
+    {
+        points[j] = create_point(lst[i], lst[i + 1]);
+    }
+    Shape *shp = create_empty_shape(POLYGON);
+    Polygon * poly = create_polygon(n, points);
+    shp->ptrShape = poly;
     return shp;
 }
 

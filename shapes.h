@@ -60,7 +60,7 @@ typedef struct {
     int n; // Le nombre de point
     Point ** points; // tableau 1D dynamique de Point*
 }Polygon;
-Polygon *create_polygon(int n, int** tab);
+Polygon *create_polygon(int n, Point** tab);
 void delete_polygon(Polygon * polygon);
 void print_polygon(Polygon * polygon);
 
@@ -80,7 +80,7 @@ Shape *create_line_shape(int px1, int py1, int px2, int py2);
 Shape *create_square_shape(int px, int py, int length);
 Shape *create_rectangle_shape(int px, int py, int width, int height);
 Shape *create_circle_shape(int px, int py, int radus);
-Shape *create_polygon_shape(int **lst, int n);
+Shape *create_polygon_shape(int lst[], int n);
 void delete_shape(Shape * shape);
 void print_shape(Shape * shape);
 
