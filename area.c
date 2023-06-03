@@ -13,7 +13,7 @@ Area* create_area(unsigned int width, unsigned int height){
     nouv_area ->width = width;
     nouv_area -> height = height;
 
-    nouv_area -> MAT = malloc(width*sizeof(BOOL *));
+    nouv_area -> MAT = calloc(width, sizeof(BOOL *));
     for (int i=0;i<width;i++) {
         nouv_area->MAT[i] = calloc(height, sizeof(int));
     }
@@ -60,10 +60,10 @@ void draw_area(Area *area){
         //printf("%d", nb_pixels);
         for (int j = 0;j <nb_pixels;j++){
             Pixel * pix_2 = pix[j];
-            //area->MAT[pix_2->px][pix_2->py] = 1;
-            area->MAT[pix_2->px][pix_2->py] = 1;
-            printf("test5\n");
-
+            if (pix_2->px >= 0 && pix_2->px < area->width && pix_2->py >= 0 && pix_2->py < area->height) {
+                area->MAT[pix_2->px][pix_2->py] = 1;
+                //printf("test5\n");
+            }
             //delete_pixel(pix_2);
         }
 
@@ -107,6 +107,21 @@ void pixel_point(Shape* shape, Pixel*** pixel_tab, int * nb_pixels){
     *pixel_tab[0] = create_pixel(pt->pos_x,pt->pos_y);
     *nb_pixels = 1;
 }
+int min(int a, int b) {
+    if (a < b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int max(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
 
 void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
     Line * l = line-> ptrShape;
@@ -124,43 +139,66 @@ void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
     int nb_segs = dmin +1;
     int taille_totale = dmax + 1;
     int taille_base = taille_totale / nb_segs;
-        int segments[nb_segs];
+    int segments[nb_segs];
     for (int i = 0; i<nb_segs;i++){
         segments[i] = taille_base;
     }
 
-    int restants = (dmax+1)%(dmin+1);
-    int *cumuls = (int *)malloc(nb_segs*sizeof(int));
-    cumuls[0]=0;
+    int restants = (dmax + 1) % (dmin + 1);
+    int *cumuls = (int *)malloc(nb_segs * sizeof(int));
+    cumuls[0] = 0;
 
-    for (int i = 1; i < nb_segs;i++)
+    for (int i = 2; i < nb_segs + 1; i++)
     {
-        cumuls[i] = ((i*restants)%(dmin+1) < ((i-1)*restants)%(dmin+1));
-        segments[i] = segments[i]+cumuls[i];
+        //printf("%d\n",segments[i]);
+        cumuls[i - 1] = ((i * restants) % (dmin + 1) < ((i - 1) * restants) % (dmin + 1));
+        segments[i - 1] += cumuls[i - 1];
+        //printf("%d\n",cumuls[i]);
+        printf("segment de %d: %d\n", i - 1, segments[i - 1]);
     }
 
-    for (int i = 0; i<nb_segs-1;i++){
+     //cumuls[0]=0;
+
+
+    for (int i = 0; i<nb_segs;i++){
         for (int j = 0;j <segments[i];j++ ) {
-            if (dy < 0) {
+            if (dy < 0) { // On trace vers le bas
                 if (dx > abs(dy)) {
-                    (*pixel_tab)[*nb_pixels] = create_pixel(++(l->p1->pos_x), (l->p1->pos_y)--);
+                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_y),(l->p1->pos_x)++);
                     *nb_pixels += 1;
                 } else {
-                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_x)++, --(l->p1->pos_y));
+                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_y)--,(l->p1->pos_x));
                     *nb_pixels += 1;
                 }
-            } else {
+            } else { // On trace vers le haut
                 if (dx > dy) {
-                    (*pixel_tab)[*nb_pixels] = create_pixel(++(l->p1->pos_x), (l->p1->pos_y)++);
+                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_x)++, (l->p1->pos_y));
                     *nb_pixels += 1;
                 } else {
-                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_x)++, ++(l->p1->pos_y));
+                    (*pixel_tab)[*nb_pixels] = create_pixel((l->p1->pos_x), (l->p1->pos_y)++);
                     *nb_pixels += 1;
                 }
             }
+            printf("%d %d\n", l->p1->pos_x, l->p1->pos_y);
         }
+
+        if (dy < 0) {
+            if (dx > abs(dy)) {
+                --(l->p1->pos_y);
+            } else {
+                (l->p1->pos_x)++;
+            }
+        } else {
+            if (dx > dy) {
+                (l->p1->pos_y)++;
+            } else {
+                (l->p1->pos_x)++;
+            }
+        }
+
     }
 }
+
 
 void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
     Circle * c = shape->ptrShape;
@@ -270,7 +308,7 @@ void pixel_polygon(Shape * polygon, Pixel *** pixel_tab, int * nb_pixels){
 
 
 Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels){
-        Pixel ** pix_tab = malloc(sizeof(Pixel*)*1000);
+        Pixel ** pix_tab = malloc(sizeof(Pixel*)*100);
         //*nb_pixels = 0;
         //printf("%d", *nb_pixels);
         switch(shape -> shape_type){
