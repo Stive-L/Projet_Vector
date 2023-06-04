@@ -34,8 +34,11 @@ Line* create_line(Point * p1, Point * p2){
 }
 
 void delete_line(Line * line){
+    free(line->p1);
+    free(line->p2);
     free(line);
     line = NULL;
+
 }
 
 void print_line(Line * line){
@@ -52,6 +55,7 @@ Square * create_square(Point * point, int length){
 }
 
 void delete_square(Square * square){
+    free(square->pos);
     free(square);
     square = NULL;
 }
@@ -70,7 +74,7 @@ Rectangle * create_rectangle(Point * point, int width, int height){
     return nouv_rect;
 }
 void delete_rectangle(Rectangle * rectangle){
-    free(rectangle);
+    free(rectangle->pos);
     rectangle = NULL;
 }
 void print_rectangle(Rectangle * rectangle){
