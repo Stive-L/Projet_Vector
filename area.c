@@ -154,7 +154,7 @@ void pixel_line(Shape* line, Pixel *** pixel_tab, int* nb_pixels){
     int temp_y = l->p1->pos_y;
 
     for (int i = 0; i<nb_segs;i++){
-        for (int j = 0;j <segments[i];j++ ) {
+        for (int j = 0;j <segments[i];j++) {
             if (dy < 0) { // On trace vers le bas, c'est à dire Ya > Yb
                 if (dx > abs(dy)) {
                     (*pixel_tab)[(*nb_pixels)++] = create_pixel((temp_y),(temp_x)++);
@@ -260,7 +260,7 @@ void pixel_circle(Shape * shape, Pixel *** pixel_tab, int *nb_pixels){
 void pixel_square(Shape * square, Pixel ***  pixel_tab, int * nb_pixels){
 
     Square * carre = square->ptrShape;
-    *pixel_tab = malloc(carre->length * carre->length * sizeof(Pixel *));
+    *pixel_tab = malloc(carre->length * 4 * sizeof(Pixel *));
     int x = carre->pos->pos_x;
     int y = carre->pos->pos_y;
     int longueur = carre ->length;
@@ -339,24 +339,24 @@ void pixel_rectangle(Shape * rectangle, Pixel *** pixel_tab,int * nb_pixels){
 
 void pixel_polygon(Shape * polygon, Pixel *** pixel_tab, int * nb_pixels){
     Polygon * poly = polygon -> ptrShape;
-    *pixel_tab = malloc(poly->n * sizeof(Pixel *));
-    for (int i = 0; i<poly->n/2;i++){
-        if (i != (poly->n/2)-1) {
-            Shape *new = create_line_shape(poly->points[i]->pos_x, poly->points[i]->pos_y, poly->points[i + 1]->pos_x,poly->points[i + 1]->pos_y);
-            //Shape *new = create_line_shape(poly->points[i]->pos_y, poly->points[i]->pos_x, poly->points[i + 1]->pos_y,poly->points[i + 1]->pos_y);
-            pixel_line(new, pixel_tab, nb_pixels);
+    *pixel_tab = malloc(100 * sizeof(Pixel *));
+    for (int i = 0; i<(poly->n)-1;i++){
+        Pixel *** pixel_temp = NULL;
+        int nb_pixels_temp = 0;
+        Shape *new = create_line_shape(poly->points[i]->pos_x, poly->points[i]->pos_y, poly->points[i + 1]->pos_x,poly->points[i + 1]->pos_y);
+        //Shape *new = create_line_shape(poly->points[i]->pos_y, poly->points[i]->pos_x, poly->points[i + 1]->pos_y,poly->points[i + 1]->pos_y);
+        pixel_line(new, pixel_temp, &nb_pixels_temp);
+        int boucle = 0;
+        for (int j = boucle ;j <nb_pixels_temp + boucle;j++){
+            (*pixel_tab)[j] = *pixel_temp[j];
         }
-        else{
-            break;
-        }
+        boucle = nb_pixels_temp;
+
+
     }
-
-    /*
-    Shape * new = create_line_shape(poly->points[poly->n]->pos_x,poly->points[poly->n]->pos_y,poly->points[poly->n+1]->pos_x,poly->points[poly->n+1]->pos_y);
-    pixel_line(new,pixel_tab,nb_pixels);
-    */
+    //Shape *new = create_line_shape(poly->points[(poly->n)-1]->pos_x, poly->points[(poly->n)-1]->pos_y, poly->points[0]->pos_x,poly->points[0]->pos_y);
+    //pixel_line(new, pixel_tab, nb_pixels);
 }
-
 
 Pixel ** create_shape_to_pixel(Shape * shape, int * nb_pixels){
         Pixel ** pix_tab = NULL;
@@ -400,5 +400,4 @@ void delete_pixel_shape(Pixel *** pixel, int nb_pixels){
     }
     free(*pixel);
     *pixel = NULL;
-
 }
