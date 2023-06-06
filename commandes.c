@@ -42,10 +42,10 @@ void free_cmd(Command *cmd){
 }
 
 void read_from_stdin(Command* cmd){
-    printf(">> ");
+    printf(">>");
     char nom_cmd[100];
     fgets(nom_cmd,100,stdin);
-    nom_cmd[strcspn(nom_cmd, "\n")] = '\0'; // On enleve la caractère retour à la ligne lors de l'utilisation de fgets
+    nom_cmd[strcspn(nom_cmd, "\n")] = '\0'; // On enleve le caractère retour à la ligne lors de l'utilisation de fgets
     char * token_cmd = strtok(nom_cmd," "); // Extraire le nom de la commande saisit par l'utilisateur
     if (token_cmd  != NULL){
         strcpy(cmd->name,token_cmd);
@@ -121,7 +121,7 @@ int read_exec_command(Command * cmd, Area * area){
          for (int i = 0 ; i<area->nb_shapes;i++){ // On parcourt tous les shapes de l'area
              if (cmd->int_params[0] == area->shapes[i]->id){
                  delete_shape(area->shapes[i]);
-                 for (int j = i;j<area->nb_shapes;++j){
+                 for (int j = i;j<area->nb_shapes;j++){
                      area->shapes[j] = area->shapes[j+1];
                  }
                  area->nb_shapes--; // On décrémente le nombre de formes
@@ -129,7 +129,7 @@ int read_exec_command(Command * cmd, Area * area){
                  break;
              }
          }
-        clear_area(area);
+        clear_area(area); // On remet/refresh tous les pixels à 0
     }
 
     else if (strcmp(cmd->name,"erase")==0){

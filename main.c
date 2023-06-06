@@ -1,22 +1,21 @@
-
+//
+// Created by Stive on 19/05/2023.
+//
 #include <stdio.h>
 #include "shapes.c"
 #include "area.c"
 #include "commandes.c"
 
 int main() {
-    //Command * cmd = create_command();
 
     Area * area = create_area(20,20);
     int exit = 0;
     while (exit == 0){
         Command * cmd = create_command();
         read_from_stdin(cmd);
-
         exit = read_exec_command(cmd, area);
     }
-
-    /*
+    /* Partie débug/Test
     Area * draw_zone = create_area(25,25);
     Shape *shape1 = create_square_shape(10,10,5);
     //Shape * shape1 = create_rectangle_shape(2,2,3,5);
@@ -42,8 +41,5 @@ int main() {
     print_area(draw_zone);
     delete_area(draw_zone);
      */
-
-
-
     return 0;
 }
