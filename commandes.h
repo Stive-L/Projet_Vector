@@ -2,8 +2,8 @@
 // Created by Stive on 03/06/2023.
 //
 
-#ifndef PROJET_VECTOR_L1_COMMANDES_H
-#define PROJET_VECTOR_L1_COMMANDES_H
+#ifndef PROJET_COMMANDES_H
+#define PROJET_COMMANDES_H
 struct command {
     char name[50];
     int int_size;
@@ -19,4 +19,4 @@ void add_int_param(Command*cmd,int p);
 void free_cmd(Command *cmd);
 int read_exec_command(Command* cmd,Area * area);
 void read_from_stdin(Command* cmd);
-#endif //PROJET_VECTOR_L1_COMMANDES_H
+#endif //PROJET_COMMANDES_H

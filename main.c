@@ -14,6 +14,9 @@ int main() {
         Command * cmd = create_command();
         read_from_stdin(cmd);
         exit = read_exec_command(cmd, area);
+        if (exit == 1){
+            free_cmd(cmd);
+        }
     }
     /* Partie débug/Test
     Area * draw_zone = create_area(25,25);
