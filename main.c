@@ -2,9 +2,9 @@
 // Created by Stive on 30/05/2023.
 //
 #include <stdio.h>
-#include "shapes.c"
-#include "area.c"
-#include "commandes.c"
+#include "src/shapes.c"
+#include "src/area.c"
+#include "src/commandes.c"
 
 int main() {
 

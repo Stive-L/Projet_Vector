@@ -4,4 +4,4 @@ project(Projet C)
 set(CMAKE_C_STANDARD 11)
 
 
-add_executable(Projet main.c shapes.c shapes.h area.c area.h commandes.c commandes.h)
+add_executable(Projet main.c shapes.c include/shapes.h area.c include/area.h commandes.c include/commandes.h)
